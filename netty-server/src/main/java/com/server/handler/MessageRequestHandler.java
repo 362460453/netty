@@ -3,6 +3,7 @@ package com.server.handler;
 import com.server.entity.MessageRequestPacket;
 import com.server.entity.MessageResponsePacket;
 import io.netty.channel.*;
+import org.springframework.stereotype.Component;
 
 /**
  * @ClassName FirstServerHandler
@@ -12,8 +13,9 @@ import io.netty.channel.*;
  * @Version V1.0
  **/
 @ChannelHandler.Sharable
+@Component
 public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRequestPacket> {
-
+    public static Channel channel = null;
     //构造单例
     public static final MessageRequestHandler INSTANCE = new MessageRequestHandler();
 
@@ -30,6 +32,7 @@ public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRe
         messageResponsePacket.setFromClientId(messageRequestPacket.getToClientId());
         messageResponsePacket.setMessage(messageRequestPacket.getMessage());
         System.out.println("服务端的channelRead0");
+        channel = ctx.channel();
         ctx.channel().writeAndFlush(messageResponsePacket);
     }
 

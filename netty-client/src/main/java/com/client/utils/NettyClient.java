@@ -42,7 +42,7 @@ public class NettyClient {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         // 空闲检测
-                        ch.pipeline().addLast(new IMIdleStateHandler());
+//                        ch.pipeline().addLast(new IMIdleStateHandler());
 //                        ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
                         ch.pipeline().addLast(new PacketDecoder());//添加一个解码逻辑处理器
                         ch.pipeline().addLast(new PacketEncoder());//添加一个编码逻辑处理器

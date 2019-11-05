@@ -1,7 +1,16 @@
 package com.server;
 
+import com.server.entity.MessageRequestPacket;
+import com.server.entity.MessageResponsePacket;
+import com.server.handler.MessageRequestHandler;
+import com.server.service.ISendCommand;
+import com.server.utils.NettyServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName ServerApplication
@@ -11,8 +20,24 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Version V1.0
  **/
 @SpringBootApplication
+@RequestMapping("/sendcli")
+@RestController
 public class ServerApplication {
+    @Autowired
+    ISendCommand iSendCommand;
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
+    }
+    @GetMapping
+    public void test() {
+
+        MessageResponsePacket ms = new MessageResponsePacket();
+        ms.setFromClientId("001");
+        ms.setMessage("胖虎在服务端");
+        // 创建登录对象
+        if (null != MessageRequestHandler.channel) {
+            iSendCommand.exec(MessageRequestHandler.channel, ms);
+        }
+
     }
 }

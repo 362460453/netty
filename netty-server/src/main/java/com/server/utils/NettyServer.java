@@ -5,6 +5,8 @@ import com.server.handler.MessageRequestHandler;
 import com.server.handler.IMIdleStateHandler;
 import com.server.handler.PacketCodecHandler;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -25,7 +27,7 @@ import java.util.Date;
 @Component
 public class NettyServer {
     private static final int PORT = 8087;
-
+    public static Channel channel = null;
     @PostConstruct
     public static void run() {
         NioEventLoopGroup boss = new NioEventLoopGroup();//表示监听端口,接受新连接线程，主要负责创建新连接
@@ -40,11 +42,11 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
                         // 空闲检测
-                        ch.pipeline().addLast(new IMIdleStateHandler());
+//                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
                         ch.pipeline().addLast(MessageRequestHandler.INSTANCE);
-                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
+//                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
                     }
                 });
 
@@ -55,6 +57,7 @@ public class NettyServer {
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
         serverBootstrap.bind(port).addListener(future -> {
             if (future.isSuccess()) {
+                channel = ((ChannelFuture) future).channel();
                 System.out.println(new Date() + ": 端口[" + port + "]绑定成功!");
             } else {
                 System.err.println("端口[" + port + "]绑定失败!");
