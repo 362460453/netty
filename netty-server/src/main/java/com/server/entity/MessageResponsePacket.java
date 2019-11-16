@@ -4,7 +4,6 @@ package com.server.entity;
 import com.server.utils.Packet;
 import lombok.Data;
 
-import static com.server.utils.Command.MESSAGE_RESPONSE;
 
 @Data
 public class MessageResponsePacket extends Packet {
@@ -16,11 +15,5 @@ public class MessageResponsePacket extends Packet {
     public MessageResponsePacket() {
 
     }
-
-    @Override
-    public Byte getCommand() {
-        return MESSAGE_RESPONSE;
-    }
-
 
 }

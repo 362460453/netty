@@ -29,8 +29,9 @@ public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRe
 
         // 2.通过消息发送方的会话信息构造要发送的消息
         MessageResponsePacket messageResponsePacket = new MessageResponsePacket();
-        messageResponsePacket.setFromClientId(messageRequestPacket.getToClientId());
-        messageResponsePacket.setMessage(messageRequestPacket.getMessage());
+//        messageResponsePacket.setFromClientId(messageRequestPacket.getToClientId());
+//        messageResponsePacket.setMessage(messageRequestPacket.getMessage());
+        messageRequestPacket.getCmd();
         System.out.println("服务端的channelRead0");
         channel = ctx.channel();
         ctx.channel().writeAndFlush(messageResponsePacket);

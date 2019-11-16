@@ -14,7 +14,7 @@ import static com.server.utils.Command.*;
 
 public class PacketCodeC {
 
-    public static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0xa5a9;
     public static final PacketCodeC INSTANCE = new PacketCodeC();
 
     private final Map<Byte, Class<? extends Packet>> packetTypeMap;
@@ -39,11 +39,13 @@ public class PacketCodeC {
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
         // 3. 实际编码过程
-        byteBuf.writeInt(MAGIC_NUMBER);
-        byteBuf.writeByte(packet.getVersion());
+        byteBuf.writeByte(packet.getHead());//同步头
+        byteBuf.writeByte(packet.getType());//类型
+        byteBuf.writeByte(packet.getLength());//长度
+//        byteBuf.writeInt(packet.getData());//数据包
         byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlogrithm());
-        byteBuf.writeByte(packet.getCommand());
-        byteBuf.writeInt(bytes.length);
+//        byteBuf.writeByte(packet.getCommand());
+        byteBuf.writeInt(bytes.length);//长度
         byteBuf.writeBytes(bytes);
 
         return byteBuf;
@@ -53,19 +55,14 @@ public class PacketCodeC {
     public Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number
         byteBuf.skipBytes(4);
-
         // 跳过版本号
         byteBuf.skipBytes(1);
-
         // 序列化算法
         byte serializeAlgorithm = byteBuf.readByte();
-
         // 指令
         byte command = byteBuf.readByte();
-
         // 数据包长度
         int length = byteBuf.readInt();
-
         byte[] bytes = new byte[length];
         byteBuf.readBytes(bytes);
 
