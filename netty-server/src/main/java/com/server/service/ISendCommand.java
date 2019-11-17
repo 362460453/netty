@@ -1,7 +1,6 @@
 package com.server.service;
 
-import com.server.entity.MessageRequestPacket;
-import com.server.entity.MessageResponsePacket;
+import com.server.utils.Packet;
 import io.netty.channel.Channel;
 
 /**
@@ -12,5 +11,5 @@ import io.netty.channel.Channel;
  * @Version V1.0
  **/
 public interface ISendCommand {
-    void exec(Channel channel, MessageResponsePacket resp);
+    void exec(Channel channel, Packet packet);
 }

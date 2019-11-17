@@ -1,9 +1,6 @@
 package com.server.utils;
 
-import com.server.handler.HeartBeatRequestHandler;
-import com.server.handler.MessageRequestHandler;
-import com.server.handler.IMIdleStateHandler;
-import com.server.handler.PacketCodecHandler;
+import com.server.handler.MessageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -43,9 +40,9 @@ public class NettyServer {
                     protected void initChannel(NioSocketChannel ch) {
                         // 空闲检测
 //                        ch.pipeline().addLast(new IMIdleStateHandler());
-                        ch.pipeline().addLast(new Spliter());
-                        ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
-                        ch.pipeline().addLast(MessageRequestHandler.INSTANCE);
+                        ch.pipeline().addLast("decode", new PacketDecoder_New());
+                        ch.pipeline().addLast("encode",new PacketEncoder_New());
+                        ch.pipeline().addLast("handler", new MessageHandler());
 //                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
                     }
                 });
