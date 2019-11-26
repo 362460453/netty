@@ -1,8 +1,8 @@
 package com.client;
 
-import com.client.entity.MessageRequestPacket;
 import com.client.service.ISendCommand;
 import com.client.utils.NettyClient;
+import com.client.utils.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,9 +30,11 @@ public class ClientApplication {
 
     @GetMapping
     public void test() {
-        MessageRequestPacket ms = new MessageRequestPacket();
-        ms.setToClientId("001");
-        ms.setMessage("胖虎");
+        Packet ms = new Packet();
+        Byte[] data={12,34,01,01,00,14,00,64};
+        ms.setData(data);
+        ms.setLength(01);
+        ms.setType(00);
         // 创建登录对象
         if (null != NettyClient.channel) {
             iSendCommand.exec(NettyClient.channel, ms);

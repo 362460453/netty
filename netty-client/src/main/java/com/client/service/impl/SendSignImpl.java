@@ -1,9 +1,7 @@
 package com.client.service.impl;
 
-import com.client.entity.MessageRequestPacket;
-import com.client.handler.MessageResponseHandler;
 import com.client.service.ISendCommand;
-import com.client.utils.PacketCodeC;
+import com.client.utils.Packet;
 import io.netty.channel.Channel;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SendSignImpl implements ISendCommand {
     @Override
-    public void exec(Channel channel, MessageRequestPacket ms) {
-        System.out.println("执行发送信号");
-        channel.writeAndFlush(ms);
+    public void exec(Channel channel, Packet packet) {
+        System.out.println("服务端执行发送信号");
+        channel.writeAndFlush(packet);
     }
 
 }

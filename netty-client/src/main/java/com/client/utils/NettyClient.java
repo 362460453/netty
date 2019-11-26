@@ -1,8 +1,6 @@
 package com.client.utils;
 
-import com.client.handler.MessageResponseHandler;
-import com.client.handler.IMIdleStateHandler;
-import com.client.handler.PacketCodecHandler;
+import com.client.handler.MessageHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -41,13 +39,9 @@ public class NettyClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) {
-                        // 空闲检测
-//                        ch.pipeline().addLast(new IMIdleStateHandler());
-//                        ch.pipeline().addLast(PacketCodecHandler.INSTANCE);
-                        ch.pipeline().addLast(new PacketDecoder());//添加一个解码逻辑处理器
-                        ch.pipeline().addLast(new PacketEncoder());//添加一个编码逻辑处理器
-                        ch.pipeline().addLast(new Spliter());//添加一个拆包处理器
-                        ch.pipeline().addLast(new MessageResponseHandler());//添加一个逻辑处理器
+                        ch.pipeline().addLast("decode", new PacketDecoder_New());
+                        ch.pipeline().addLast("encode",new PacketEncoder_New());
+                        ch.pipeline().addLast("handler", new MessageHandler());
 
                     }
                 });
