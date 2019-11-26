@@ -18,7 +18,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
-
+        System.out.println("服务端收到消息");
         //1.先发送成功,成功的信号是packet对象，只有一个字节 type是响应 ，只不过data是一个字节的回复
         Packet packetResponse = new Packet();
         //构造返回给客户端的packet
