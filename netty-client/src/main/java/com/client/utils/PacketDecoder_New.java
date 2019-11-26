@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
-    private static final int LENGTH_FIELD_OFFSET = 4;//表示数据长度字段开始的偏移量
+    private static final int LENGTH_FIELD_OFFSET = 3;//表示数据长度字段开始的偏移量
     private static final int LENGTH_FIELD_LENGTH = 1;//数据长度字段的所占的字节数
 
     public PacketDecoder_New() {
