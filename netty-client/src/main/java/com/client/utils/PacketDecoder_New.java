@@ -20,15 +20,17 @@ public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
             return null;
         }
         //1  按第一种更直观
+//        short i1 = byteBuf.readShort();
         byte head1 = byteBuf.readByte();
         byte head2 = byteBuf.readByte();
-        if (head1 != 0xa5 || head2 != 0xa9) {
-            return null;
-        }
+//        if (head1 != 0xa5 || head2 != 0xa9) {
+//            return null;
+//        }
         int type = byteBuf.readByte();
         int length = byteBuf.readByte();
 
-        byte[] data = new byte[in.readableBytes()];
+        byte[] data = new byte[length];
+
         byteBuf.readBytes(data);
         Byte[] bytes = new Byte[data.length];
         for (int i = 0; i < bytes.length; i++) {

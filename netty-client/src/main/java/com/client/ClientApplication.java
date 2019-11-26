@@ -33,7 +33,7 @@ public class ClientApplication {
         Packet ms = new Packet();
         Byte[] data={12,34,01,01,00,14,00,64};
         ms.setData(data);
-        ms.setLength(01);
+        ms.setLength(data.length);
         ms.setType(00);
         // 创建登录对象
         if (null != NettyClient.channel) {
