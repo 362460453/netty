@@ -33,7 +33,10 @@ public class ServerApplication {
     public void test() {
 
         Packet ms = new Packet();
-
+        Byte[] data={00};
+        ms.setData(data);
+        ms.setLength(01);
+        ms.setType(03);
         // 创建登录对象
         if (null != NettyServer.channel) {
             iSendCommand.exec(NettyServer.channel, ms);

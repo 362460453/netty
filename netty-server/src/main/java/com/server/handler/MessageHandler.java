@@ -24,8 +24,13 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         //构造返回给客户端的packet
         //管道给packet携带到不同业务处理类
         packet.setChannel(ctx.channel());
-        ctx.channel().writeAndFlush(packet);
+        packetResponse.setType(2);
+        packetResponse.setLength(1);
+        packetResponse.setData(new Byte[] {1,1});
+        ctx.channel().writeAndFlush(packetResponse);
         //2.根据packet 里面的type用枚举分发不同处理器
+        //测试收到的是什么东西
+        System.out.println(packet.toString());
         if (TypeEnum.CONTROL.value() == packet.getType()) {
         //一次类推
             //如果符合这个信号呢？
