@@ -16,7 +16,7 @@ public enum TypeEnum {
     private String descr;
 
     public int value() {
-        return this.value();
+        return this.type;
     }
 
     //Class clazz;

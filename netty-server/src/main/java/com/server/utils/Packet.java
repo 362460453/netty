@@ -3,6 +3,7 @@ package com.server.utils;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
