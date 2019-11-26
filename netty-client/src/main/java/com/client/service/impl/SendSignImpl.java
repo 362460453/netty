@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class SendSignImpl implements ISendCommand {
     @Override
     public void exec(Channel channel, Packet packet) {
-        System.out.println("服务端执行发送信号");
+        System.out.println("客户端执行发送信号");
         channel.writeAndFlush(packet);
     }
 
