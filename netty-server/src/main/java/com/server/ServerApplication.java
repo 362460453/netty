@@ -33,7 +33,7 @@ public class ServerApplication {
     public void test() {
 
         Packet ms = new Packet();
-        Byte[] data={00,1};
+        byte[] data={00,1};
         ms.setData(data);
         ms.setLength(data.length);
         ms.setType(03);

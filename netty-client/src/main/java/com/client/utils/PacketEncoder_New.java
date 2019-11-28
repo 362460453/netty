@@ -15,7 +15,7 @@ public class PacketEncoder_New extends MessageToByteEncoder<Packet> {
         byteBuf.writeByte(0xa9);
         byteBuf.writeBytes(NumConvertUtil.intToByte(packet.getType()));//类型
         byteBuf.writeBytes(NumConvertUtil.intToByte(packet.getLength()));//长度
-        byteBuf.writeBytes(toPrimitives(packet.getData()));//数据包
+        byteBuf.writeBytes(packet.getData());//数据包
 
     }
 

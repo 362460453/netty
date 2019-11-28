@@ -26,7 +26,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         packet.setChannel(ctx.channel());
         packetResponse.setType(2);
         packetResponse.setLength(2);
-        packetResponse.setData(new Byte[] {1,2});
+        packetResponse.setData(new byte[] {00,2});
         ctx.channel().writeAndFlush(packetResponse);
         //2.根据packet 里面的type用枚举分发不同处理器
         //测试收到的是什么东西

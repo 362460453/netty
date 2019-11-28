@@ -32,12 +32,8 @@ public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
         byte[] data = new byte[length];
 
         byteBuf.readBytes(data);
-        Byte[] bytes = new Byte[data.length];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = data[i];
-        }
 
-        Packet packet = new Packet().setType(type).setLength(length).setData(bytes);
+        Packet packet = new Packet().setType(type).setLength(length).setData(data);
         return packet;
     }
 }

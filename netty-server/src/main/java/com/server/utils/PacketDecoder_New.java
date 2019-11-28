@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
-import java.util.Arrays;
-import java.util.Collections;
 
 public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
     private static final int LENGTH_FIELD_OFFSET = 3;//表示数据长度字段开始的偏移量
@@ -33,12 +31,9 @@ public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
 // laozi jiaoni tihuan ni tihuan na er qu le
         byte[] data = new byte[length];
         byteBuf.readBytes(data);
-        Byte[] bytes = new Byte[data.length];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = data[i];
-        }
 
-        Packet packet = new Packet().setType(type).setLength(length).setData(bytes);
+
+        Packet packet = new Packet().setType(type).setLength(length).setData(data);
         return packet;
     }
 }

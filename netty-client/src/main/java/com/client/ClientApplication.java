@@ -31,7 +31,7 @@ public class ClientApplication {
     @GetMapping
     public void test() {
         Packet ms = new Packet();
-        Byte[] data= {12,34,01,01,00,14,00,64};
+        byte[] data= {01,12,34,01,02,01,01,00,14,00,64};
         ms.setData(data);
         ms.setLength(data.length);
         ms.setType(00);

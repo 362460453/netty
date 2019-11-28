@@ -13,7 +13,7 @@ public class Packet {
 //    private Integer head = 42409;//同步头
     private Integer type;//类型
     private Integer length;//长度
-    private Byte[] data;//数据包
+    private byte[] data;//数据包
     private Channel channel;
 
 }
