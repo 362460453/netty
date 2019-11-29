@@ -3,6 +3,7 @@ package com.client;
 import com.client.service.ISendCommand;
 import com.client.utils.NettyClient;
 import com.client.utils.Packet;
+import io.netty.buffer.ByteBuf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,10 +32,11 @@ public class ClientApplication {
     @GetMapping
     public void test() {
         Packet ms = new Packet();
-        byte[] data= {01,12,34,01,02,01,01,00,14,00,64};
+//        byte[] data= {0x01,0x27,0x0f,0x01,0x02,0x01,0x01,0x00,0x14,0x00,0x64};
+        byte[] data = {01, 39, 16, 01, 03, 01};
         ms.setData(data);
-        ms.setLength(data.length);
-        ms.setType(00);
+        ms.setLength((byte)data.length);
+        ms.setType((byte)03);
         if (null != NettyClient.channel) {
             iSendCommand.exec(NettyClient.channel, ms);
         }

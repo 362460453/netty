@@ -2,6 +2,8 @@ package com.server.handler;
 
 import com.server.utils.Packet;
 import com.server.utils.TypeEnum;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import org.springframework.stereotype.Component;
 
@@ -21,27 +23,32 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         System.out.println("服务端收到消息");
         //1.先发送成功,成功的信号是packet对象，只有一个字节 type是响应 ，只不过data是一个字节的回复
         Packet packetResponse = new Packet();
-        //构造返回给客户端的packet
-        //管道给packet携带到不同业务处理类
-        packet.setChannel(ctx.channel());
-        packetResponse.setType(2);
-        packetResponse.setLength(2);
-        packetResponse.setData(new byte[] {00,2});
+        packetResponse.setType((byte) 2);
+//        packet.getByteBuf().clear();
+//        packetResponse.setByteBuf(packet.getByteBuf());
+//        packetResponse.getByteBuf().writeByte(1);
+//        packetResponse.getByteBuf().writeShort(10000);
+//        packetResponse.getByteBuf().writeByte(1);
+//        packetResponse.getByteBuf().writeByte(2);
+//        packetResponse.getByteBuf().writeByte(1);
+//        packetResponse.getByteBuf().writeByte(1);
+//        packetResponse.getByteBuf().writeShort(20);
+//        packetResponse.getByteBuf().writeShort(100);
+
+
+        byte[] data = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
+        packetResponse.setData(data);
+        packetResponse.setLength((byte) packetResponse.getData().length);
         ctx.channel().writeAndFlush(packetResponse);
         //2.根据packet 里面的type用枚举分发不同处理器
         //测试收到的是什么东西
+        packet.setChannel(ctx.channel());
         System.out.println(packet.toString());
-        if (TypeEnum.CONTROL.value() == packet.getType()) {
-            for (Byte data:packet.getData()){
-                System.out.println(data);
-            }
+        byte l = packet.getByteBuf().readByte();
+        short i = packet.getByteBuf().readShort();
+        System.out.println(l);
+        System.out.println(i);
 
-        //一次类推
-            //如果符合这个信号呢？
-            //转发到别的处理器，在不同业务处理器//ctx.channel().writeAndFlush(packet);
-        } else if (1 == 1) {
-
-        }
 
     }
 
