@@ -33,7 +33,8 @@ public class ClientApplication {
     public void test() {
         Packet ms = new Packet();
 //        byte[] data= {0x01,0x27,0x0f,0x01,0x02,0x01,0x01,0x00,0x14,0x00,0x64};
-        byte[] data = {01, 39, 16, 01, 03, 01};
+        byte[] data = {01, 39, 16, 01, 03, 81};
+//        byte[] data = {10,20};
         ms.setData(data);
         ms.setLength((byte)data.length);
         ms.setType((byte)03);

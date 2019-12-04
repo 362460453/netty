@@ -24,19 +24,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         //1.先发送成功,成功的信号是packet对象，只有一个字节 type是响应 ，只不过data是一个字节的回复
         Packet packetResponse = new Packet();
         packetResponse.setType((byte) 2);
-//        packet.getByteBuf().clear();
-//        packetResponse.setByteBuf(packet.getByteBuf());
-//        packetResponse.getByteBuf().writeByte(1);
-//        packetResponse.getByteBuf().writeShort(10000);
-//        packetResponse.getByteBuf().writeByte(1);
-//        packetResponse.getByteBuf().writeByte(2);
-//        packetResponse.getByteBuf().writeByte(1);
-//        packetResponse.getByteBuf().writeByte(1);
-//        packetResponse.getByteBuf().writeShort(20);
-//        packetResponse.getByteBuf().writeShort(100);
 
-
-        byte[] data = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
+//        byte[] data = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
+        byte[] data = {0xa,0x14};
         packetResponse.setData(data);
         packetResponse.setLength((byte) packetResponse.getData().length);
         ctx.channel().writeAndFlush(packetResponse);
@@ -44,10 +34,17 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         //测试收到的是什么东西
         packet.setChannel(ctx.channel());
         System.out.println(packet.toString());
+
         byte l = packet.getByteBuf().readByte();
         short i = packet.getByteBuf().readShort();
+        byte j = packet.getByteBuf().readByte();
+        byte q = packet.getByteBuf().readByte();
+        int k = packet.getByteBuf().readByte();
         System.out.println(l);
         System.out.println(i);
+        System.out.println(j);
+        System.out.println(q);
+        System.out.println(k);
 
 
     }
