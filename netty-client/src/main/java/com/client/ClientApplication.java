@@ -29,18 +29,27 @@ public class ClientApplication {
         SpringApplication.run(ClientApplication.class, args);
     }
 
-    @GetMapping
-    public void test() {
+    @GetMapping("/score")
+    public void score() {
         Packet ms = new Packet();
-//        byte[] data= {0x01,0x27,0x0f,0x01,0x02,0x01,0x01,0x00,0x14,0x00,0x64};
-        byte[] data = {01, 39, 16, 01, 03, 81};
-//        byte[] data = {10,20};
+        byte[] data = {01, 01, (byte) 91};
         ms.setData(data);
-        ms.setLength((byte)data.length);
-        ms.setType((byte)03);
+        ms.setLength((byte) data.length);
+        ms.setType((byte) 01);
         if (null != NettyClient.channel) {
             iSendCommand.exec(NettyClient.channel, ms);
         }
+    }
 
+    @GetMapping("/action")
+    public void action() {
+        Packet ms = new Packet();
+        byte[] data = {01, 39, 16, 01, 03, 01};
+        ms.setData(data);
+        ms.setLength((byte) data.length);
+        ms.setType((byte) 00);
+        if (null != NettyClient.channel) {
+            iSendCommand.exec(NettyClient.channel, ms);
+        }
     }
 }

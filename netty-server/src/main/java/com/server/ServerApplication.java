@@ -29,18 +29,29 @@ public class ServerApplication {
         SpringApplication.run(ServerApplication.class, args);
     }
 
-    @GetMapping
-    public void test() {
-
+    @GetMapping("/action")
+    public void action() {
         Packet ms = new Packet();
-        byte[] data = {00, 1};
-        ms.setData(data);
-        ms.setLength((byte) data.length);
-        ms.setType((byte) 03);
-        // 创建登录对象
-        if (null != NettyServer.channel) {
-            iSendCommand.exec(NettyServer.channel, ms);
+        byte[] reqData = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
+        ms.setData(reqData);
+        ms.setLength((byte) reqData.length);
+        ms.setType((byte) 00);
+        if (null != MessageHandler.channel) {
+            ms.setChannel(MessageHandler.channel);
+            iSendCommand.exec(ms.getChannel(), ms);
         }
+    }
 
+    @GetMapping("/query")
+    public void query() {
+        Packet ms = new Packet();
+        byte[] reqData = {01, 00};
+        ms.setData(reqData);
+        ms.setLength((byte) reqData.length);
+        ms.setType((byte) 03);
+        if (null != MessageHandler.channel) {
+            ms.setChannel(MessageHandler.channel);
+            iSendCommand.exec(ms.getChannel(), ms);
+        }
     }
 }

@@ -17,34 +17,52 @@ import org.springframework.stereotype.Component;
 @ChannelHandler.Sharable
 @Component
 public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
+    public static Channel channel = null;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
+        channel = ctx.channel();
         System.out.println("服务端收到消息");
-        //1.先发送成功,成功的信号是packet对象，只有一个字节 type是响应 ，只不过data是一个字节的回复
         Packet packetResponse = new Packet();
         packetResponse.setType((byte) 2);
-
-//        byte[] data = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
-        byte[] data = {0xa,0x14};
+        byte[] data = {00, 00};
         packetResponse.setData(data);
-        packetResponse.setLength((byte) packetResponse.getData().length);
-        ctx.channel().writeAndFlush(packetResponse);
-        //2.根据packet 里面的type用枚举分发不同处理器
-        //测试收到的是什么东西
         packet.setChannel(ctx.channel());
-        System.out.println(packet.toString());
+        packetResponse.setLength((byte) packetResponse.getData().length);
+        System.out.println("收到客户端内容：" + packet.toString());
+        if (packet.getType() == 0) {
+            //控制
+            ctx.channel().writeAndFlush(packetResponse);
+            byte a = packet.getByteBuf().readByte();//靶机编号
+            short b = packet.getByteBuf().readShort();//指令id
+            byte c = packet.getByteBuf().readByte();//靶机类型
+            byte d = packet.getByteBuf().readByte();//命令字,一定是03
+            int e = packet.getByteBuf().readByte();//参数
+            System.out.println("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是3）：" + d + ",参数：" + e);
 
-        byte l = packet.getByteBuf().readByte();
-        short i = packet.getByteBuf().readShort();
-        byte j = packet.getByteBuf().readByte();
-        byte q = packet.getByteBuf().readByte();
-        int k = packet.getByteBuf().readByte();
-        System.out.println(l);
-        System.out.println(i);
-        System.out.println(j);
-        System.out.println(q);
-        System.out.println(k);
+
+        } else if (packet.getType() == 1) {
+            //成绩
+            ctx.channel().writeAndFlush(packetResponse);
+            byte a = packet.getByteBuf().readByte();//靶机编号
+            byte b = packet.getByteBuf().readByte();//靶机类型
+            byte c = packet.getByteBuf().readByte();//部位
+            System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",部位：" + c);
+        } else if (packet.getType() == 2) {
+            //响应
+            short b = packet.getByteBuf().readShort();//结果
+            System.out.println("结果：" + b);
+        } else if (packet.getType() == 3) {
+            //查询
+            ctx.channel().writeAndFlush(packetResponse);
+            byte a = packet.getByteBuf().readByte();//靶机编号
+            byte b = packet.getByteBuf().readByte();//靶请求项
+            byte c = packet.getByteBuf().readByte();//状态
+            byte d = packet.getByteBuf().readByte();//电量
+            byte e = packet.getByteBuf().readByte();//信号
+            System.out.println("查询。靶机编号：" + a + ",请求项：" + b + ",状态：" + c + ",电量：" + d + ",信号：" + e);
+
+        }
 
 
     }

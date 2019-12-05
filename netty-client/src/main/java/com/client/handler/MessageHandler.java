@@ -1,7 +1,6 @@
 package com.client.handler;
 
 import com.client.utils.Packet;
-import com.client.utils.TypeEnum;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -26,6 +25,22 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         System.out.println(packet.toString());
 //        byte l = packet.getByteBuf().readByte();
 //        short i = packet.getByteBuf().readShort();
+        if (packet.getType() == 1) {
+            byte[] reqData = {00,00};
+            Packet packet1 = new Packet();
+            packet1.setData(reqData);
+            packet1.setLength((byte) reqData.length);
+            packet1.setType((byte) 02);
+            ctx.channel().writeAndFlush(packet1);
+        }
+        if (packet.getType() == 3) {
+            byte[] reqData = {01, 00, 01, 0x64, 0x50};
+            Packet packet1 = new Packet();
+            packet1.setData(reqData);
+            packet1.setLength((byte) reqData.length);
+            packet1.setType((byte) 03);
+            ctx.channel().writeAndFlush(packet1);
+        }
     }
 
 }
