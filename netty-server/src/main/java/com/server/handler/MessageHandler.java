@@ -40,14 +40,22 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
             int e = packet.getByteBuf().readByte();//参数
             System.out.println("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是3）：" + d + ",参数：" + e);
 
-
         } else if (packet.getType() == 1) {
             //成绩
             ctx.channel().writeAndFlush(packetResponse);
             byte a = packet.getByteBuf().readByte();//靶机编号
-            byte b = packet.getByteBuf().readByte();//靶机类型
-            byte c = packet.getByteBuf().readByte();//部位
-            System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",部位：" + c);
+            int b = packet.getByteBuf().readByte();//靶机类型
+            short c = packet.getByteBuf().readUnsignedByte();//部位
+            int hight = c >> 4;
+            int low = c & 0x0f;
+            if (b == 1) {//环靶
+                System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",命中：" + hight + "环 " + low + "点 ");
+            } else if (b == 5) {//红外
+                System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",触发红外：" + c);
+            } else {//分区
+                System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",命中：" + c);
+            }
+
         } else if (packet.getType() == 2) {
             //响应
             short b = packet.getByteBuf().readShort();//结果
@@ -67,4 +75,32 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
 
     }
 
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        channel = ctx.channel();
+//        super.channelActive(ctx);
+    }
+
+    /**
+     * byte数组转换为无符号short整数
+     *
+     * @param bytes byte数组
+     * @return short整数
+     */
+    public static int byte2ToUnsignedShort(byte[] bytes) {
+        return byte2ToUnsignedShort(bytes, 0);
+    }
+
+    /**
+     * byte数组转换为无符号short整数
+     *
+     * @param bytes byte数组
+     * @param off   开始位置
+     * @return short整数
+     */
+    public static int byte2ToUnsignedShort(byte[] bytes, int off) {
+        int high = bytes[off];
+        int low = bytes[off + 1];
+        return (high << 8 & 0xFF00) | (low & 0xFF);
+    }
 }

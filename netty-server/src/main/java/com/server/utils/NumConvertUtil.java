@@ -21,12 +21,13 @@ public class NumConvertUtil {
      */
     public static byte[] intToByte(int num) {
         String hexString = Integer.toHexString(num);
+
         byte[] result = hexStringToByte(hexString);
         return result;
     }
 
 //    public static void main(String[] args) {
-//        int a=1;
+//        int a=-96;
 //        System.out.println("bytes-->" + Arrays.toString(intToByte(a)));//打印byte数组
 //    }
     /**
