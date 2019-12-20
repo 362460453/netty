@@ -34,11 +34,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
             //控制
             ctx.channel().writeAndFlush(packetResponse);
             byte a = packet.getByteBuf().readByte();//靶机编号
-            short b = packet.getByteBuf().readShort();//指令id
+            short b = packet.getByteBuf().readByte();//指令id
             byte c = packet.getByteBuf().readByte();//靶机类型
-            byte d = packet.getByteBuf().readByte();//命令字,一定是03
+            byte d = packet.getByteBuf().readByte();//命令字,一定是02
             int e = packet.getByteBuf().readByte();//参数
-            System.out.println("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是3）：" + d + ",参数：" + e);
+            System.out.println("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是2）：" + d + ",参数：" + e);
 
         } else if (packet.getType() == 1) {
             //成绩
@@ -58,7 +58,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
 
         } else if (packet.getType() == 2) {
             //响应
-            short b = packet.getByteBuf().readShort();//结果
+            short b = packet.getByteBuf().readByte();//结果
             System.out.println("结果：" + b);
         } else if (packet.getType() == 3) {
             //查询
@@ -66,13 +66,10 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
             byte a = packet.getByteBuf().readByte();//靶机编号
             byte b = packet.getByteBuf().readByte();//靶请求项
             byte c = packet.getByteBuf().readByte();//状态
-            byte d = packet.getByteBuf().readByte();//电量
-            byte e = packet.getByteBuf().readByte();//信号
+            int d = packet.getByteBuf().readUnsignedByte();//电量
+            int e = packet.getByteBuf().readUnsignedByte();//信号
             System.out.println("查询。靶机编号：" + a + ",请求项：" + b + ",状态：" + c + ",电量：" + d + ",信号：" + e);
-
         }
-
-
     }
 
     @Override

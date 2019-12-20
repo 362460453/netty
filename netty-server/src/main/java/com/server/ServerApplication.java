@@ -32,7 +32,11 @@ public class ServerApplication {
     @GetMapping("/action")
     public void action() {
         Packet ms = new Packet();
-        byte[] reqData = {01, 39, 16, 01, 02, 01, 01, 00, 14, 00, 64};
+        byte[] reqData = {01, (byte) 254, 01, 01, 03,
+                01, 01, 05, 00,
+                02, 02, 50, 05,
+                01, 01, 05, 04};
+//        byte[] reqData = {01, (byte) 254, 01, 00, 01, 100};
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);
