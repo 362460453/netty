@@ -34,7 +34,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
             //控制
             ctx.channel().writeAndFlush(packetResponse);
             byte a = packet.getByteBuf().readByte();//靶机编号
-            short b = packet.getByteBuf().readByte();//指令id
+            short b = packet.getByteBuf().readUnsignedByte();//指令id
             byte c = packet.getByteBuf().readByte();//靶机类型
             byte d = packet.getByteBuf().readByte();//命令字,一定是02
             int e = packet.getByteBuf().readByte();//参数
