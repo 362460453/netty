@@ -2,7 +2,6 @@ package com.server;
 
 import com.server.handler.MessageHandler;
 import com.server.service.ISendCommand;
-import com.server.utils.NettyServer;
 import com.server.utils.Packet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

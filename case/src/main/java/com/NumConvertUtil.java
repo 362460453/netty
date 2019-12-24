@@ -1,9 +1,6 @@
-package com.server.utils;
-
-import io.netty.buffer.ByteBuf;
+package com;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 
 /**
  * @ClassName NumConvertUtil
@@ -21,15 +18,15 @@ public class NumConvertUtil {
      */
     public static byte[] intToByte(int num) {
         String hexString = Integer.toHexString(num);
-
         byte[] result = hexStringToByte(hexString);
         return result;
     }
 
 //    public static void main(String[] args) {
-//        int a=-96;
+//        int a=1;
 //        System.out.println("bytes-->" + Arrays.toString(intToByte(a)));//打印byte数组
 //    }
+
     /**
      * bytes 转16进制字符串
      *
@@ -109,6 +106,19 @@ public class NumConvertUtil {
     public static int HexStringToInt(String HexString) {
 
         int inJTFingerLockAddress = Integer.valueOf(HexString, 16);
+
+        return inJTFingerLockAddress;
+    }
+
+    /**
+     * 16进制byte转十进制int
+     *
+     * @param bytes
+     * @return
+     */
+    public static int HexStringToInt(byte bytes) {
+        String str = String.valueOf(bytes);
+        int inJTFingerLockAddress = Integer.valueOf(str, 16);
 
         return inJTFingerLockAddress;
     }

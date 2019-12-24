@@ -1,9 +1,6 @@
 package com.server.handler;
 
 import com.server.utils.Packet;
-import com.server.utils.TypeEnum;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import org.springframework.stereotype.Component;
 
@@ -76,28 +73,5 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         channel = ctx.channel();
 //        super.channelActive(ctx);
-    }
-
-    /**
-     * byte数组转换为无符号short整数
-     *
-     * @param bytes byte数组
-     * @return short整数
-     */
-    public static int byte2ToUnsignedShort(byte[] bytes) {
-        return byte2ToUnsignedShort(bytes, 0);
-    }
-
-    /**
-     * byte数组转换为无符号short整数
-     *
-     * @param bytes byte数组
-     * @param off   开始位置
-     * @return short整数
-     */
-    public static int byte2ToUnsignedShort(byte[] bytes, int off) {
-        int high = bytes[off];
-        int low = bytes[off + 1];
-        return (high << 8 & 0xFF00) | (low & 0xFF);
     }
 }
