@@ -88,6 +88,9 @@ public class ServerApplication {
         iSendCommand.exec(ms);
     }
 
+    /*
+    2号靶机起
+     */
     @GetMapping("/up/b")
     public void upB() throws Exception {
         Packet ms = new Packet();
@@ -102,7 +105,7 @@ public class ServerApplication {
     /*
     倒
      */
-    @GetMapping("/actionb")
+    @GetMapping("/down/b")
     public void actionb() throws Exception {
         Packet ms = new Packet();
         byte[] reqData = {01, (byte) 254, 01, 00, 02, 00};
