@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
@@ -18,5 +17,6 @@ public class Packet {
     private byte[] data;//数据包
     private ByteBuf byteBuf;//byteBuf
     private Channel channel;
+    private String equipmentMapKey;//查询状态时set
 
 }

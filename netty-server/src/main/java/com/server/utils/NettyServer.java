@@ -23,7 +23,7 @@ import java.util.Date;
  **/
 @Component
 public class NettyServer {
-    private static final int PORT = 8087;
+    private static final int PORT = 8084;
     public static Channel channel = null;
     @PostConstruct
     public static void run() {

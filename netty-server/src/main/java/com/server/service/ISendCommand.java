@@ -1,7 +1,6 @@
 package com.server.service;
 
 import com.server.utils.Packet;
-import io.netty.channel.Channel;
 
 /**
  * @ClassName SendCommand
@@ -11,5 +10,5 @@ import io.netty.channel.Channel;
  * @Version V1.0
  **/
 public interface ISendCommand {
-    void exec(Channel channel, Packet packet);
+    void exec(Packet packet) throws Exception;
 }
