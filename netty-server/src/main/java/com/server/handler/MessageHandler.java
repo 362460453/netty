@@ -99,14 +99,24 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         byte[] data = {1, (byte) 255};
         packetResponse.setData(data);
         packetResponse.setLength((byte) packetResponse.getData().length);
-        Thread.sleep(5000);
+        Thread.sleep(3000);
         ctx.channel().writeAndFlush(packetResponse);
         log.info("channelMap:{}", Constants.channelMap.toString());
-        while (!(Constants.equipmentMap.containsValue(channelId))){
-            ctx.channel().writeAndFlush(packetResponse);
-            Thread.sleep(2000);
-        }
         super.channelActive(ctx);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (!(Constants.equipmentMap.containsValue(channelId))){
+//                    log.info("while循环发送channelId:{}", channelId);
+//                    ctx.channel().writeAndFlush(packetResponse);
+//                    try {
+//                        Thread.sleep(2000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.server.utils;
 
+import com.server.handler.IMIdleStateHandler;
 import com.server.handler.MessageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -39,7 +40,7 @@ public class NettyServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
                         // 空闲检测
-//                        ch.pipeline().addLast(new IMIdleStateHandler());
+                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast("decode", new PacketDecoder_New());
                         ch.pipeline().addLast("encode",new PacketEncoder_New());
                         ch.pipeline().addLast("handler", new MessageHandler());

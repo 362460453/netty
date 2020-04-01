@@ -22,7 +22,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class NettyClient {
     private static final int MAX_RETRY = 5;
-    private static final String HOST = "112.126.99.144";
+//    private static final String HOST = "112.126.99.144";
+    private static final String HOST = "127.0.0.1";
+
     private static final int PORT = 8084;
     public static Channel channel = null;
     @PostConstruct

@@ -31,7 +31,20 @@ public class ClientApplication {
     }
 
     private static final Object obj = new Object();
-
+    /*
+      心跳
+         */
+    @GetMapping("/imidle")
+    public void imidle() {
+        Packet ms = new Packet();
+        byte[] data = {00};
+        ms.setData(data);
+        ms.setLength((byte) data.length);
+        ms.setType((byte) 2);
+        if (null != NettyClient.channel) {
+            iSendCommand.exec(NettyClient.channel, ms);
+        }
+    }
     /*
     注册a
      */
