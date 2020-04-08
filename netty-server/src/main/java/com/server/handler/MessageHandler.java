@@ -1,5 +1,6 @@
 package com.server.handler;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.server.utils.Constants;
 import com.server.utils.Packet;
 import io.netty.channel.*;
@@ -92,17 +93,29 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("channel_Id : " + ctx.channel().id().asShortText());
-        String channelId=ctx.channel().id().asShortText();
+        String channelId = ctx.channel().id().asShortText();
         Constants.channelMap.put(channelId, ctx);//channelId和channel对应关系
+        log.info("channelMap:{}", Constants.channelMap.toString());
         Packet packetResponse = new Packet();
         packetResponse.setType((byte) 3);
         byte[] data = {1, (byte) 255};
         packetResponse.setData(data);
         packetResponse.setLength((byte) packetResponse.getData().length);
-        Thread.sleep(3000);
-        ctx.channel().writeAndFlush(packetResponse);
-        log.info("channelMap:{}", Constants.channelMap.toString());
         super.channelActive(ctx);
+        ThreadUtil.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!(Constants.equipmentMap.containsValue(channelId))) {
+                    log.info("while循环发送channelId:{}", channelId);
+                    ctx.channel().writeAndFlush(packetResponse);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {

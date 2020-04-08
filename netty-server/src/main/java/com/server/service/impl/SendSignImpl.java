@@ -1,5 +1,6 @@
 package com.server.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.server.handler.MessageHandler;
 import com.server.service.ISendCommand;
 import com.server.utils.Constants;
@@ -35,6 +36,9 @@ public class SendSignImpl implements ISendCommand {
         }
         log.info("SendSignImpl.equipmentMapKey:{}", equipmentMapKey);
         String channelId = Constants.equipmentMap.get(equipmentMapKey);
+        if (StrUtil.isEmpty(channelId)){
+            throw new Exception("无法发送信号,器材未注册");
+        }
         Channel channel = Constants.channelMap.get(channelId).channel();
         if (channel == null) {
             throw new Exception("无法发送信号，管道为空");
