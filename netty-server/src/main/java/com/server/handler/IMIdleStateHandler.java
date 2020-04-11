@@ -6,6 +6,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 @Slf4j
@@ -28,7 +29,9 @@ public class IMIdleStateHandler extends IdleStateHandler {
         }
         log.info("设备 :" + equipmentMapKey + " 空闲检测 离 线");
         Constants.channelMap.remove(channelId);
-        Constants.equipmentMap.remove(equipmentMapKey);
+        Collection<String> values = Constants.equipmentMap.values();
+        values.remove(channelId);
+//        Constants.equipmentMap.remove(equipmentMapKey);
         ctx.channel().close();
     }
 }

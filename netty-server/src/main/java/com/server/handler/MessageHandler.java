@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -37,6 +38,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         if (packet.getType() == 3 && packet.getByteBuf().getUnsignedByte(5) == 255) { //code_type
             String equipmentMapKey = packet.getByteBuf().getUnsignedByte(6) +
                     "_" + packet.getByteBuf().getUnsignedByte(7);
+            log.info("channel_Id : " + ctx.channel().id().asShortText());
             log.info("code_type:{}", equipmentMapKey);
             Constants.equipmentMap.put(equipmentMapKey, ctx.channel().id().asShortText());//设备和channelId对应关系
             log.info("equipmentMap:{}", Constants.equipmentMap.toString());
@@ -93,6 +95,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("channel_Id : " + ctx.channel().id().asShortText());
+        log.info("地址 :" + ctx.channel().remoteAddress() + " 的设备试图注册");
         String channelId = ctx.channel().id().asShortText();
         Constants.channelMap.put(channelId, ctx);//channelId和channel对应关系
         log.info("channelMap:{}", Constants.channelMap.toString());
@@ -102,34 +105,24 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         packetResponse.setData(data);
         packetResponse.setLength((byte) packetResponse.getData().length);
         super.channelActive(ctx);
-        ThreadUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (!(Constants.equipmentMap.containsValue(channelId))) {
-                    log.info("while循环发送channelId:{}", channelId);
-                    ctx.channel().writeAndFlush(packetResponse);
+        Constants.pool.execute(() -> {
+            while (!(Constants.equipmentMap.containsValue(channelId))) {
+                if (Constants.channelMap.containsKey(channelId)) {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    log.info("while发送channelId:{},\nequipmentMap共有{}条数据，分别:{}。\nchannelMap共有{}条数据,分别:{}",
+                            channelId,
+                            Constants.equipmentMap.size(), Constants.equipmentMap.toString(),
+                            Constants.channelMap.size(), Constants.channelMap.toString());
+                    ctx.channel().writeAndFlush(packetResponse);
+                } else {
+                    return;
                 }
             }
         });
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (!(Constants.equipmentMap.containsValue(channelId))){
-//                    log.info("while循环发送channelId:{}", channelId);
-//                    ctx.channel().writeAndFlush(packetResponse);
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -146,19 +139,24 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
         String channelId = ctx.channel().id().asShortText();
-        String equipmentMapKey = null;
-        for (Map.Entry<String, String> str : Constants.equipmentMap.entrySet()) {
-            if (channelId.equals(str.getValue())) {
-                equipmentMapKey = str.getKey();
-            }
-        }
-        if (equipmentMapKey != null) {
-            // 清理缓存
-            log.info("设备 :" + equipmentMapKey + " 主 动 离 线");
-            Constants.channelMap.remove(channelId);
-            Constants.equipmentMap.remove(equipmentMapKey);
-        }
+//        String equipmentMapKey = null;
+//        for (Map.Entry<String, String> str : Constants.equipmentMap.entrySet()) {
+//            if (channelId.equals(str.getValue())) {
+//                equipmentMapKey = str.getKey();
+//            }
+//        }
+//        if (equipmentMapKey != null) {
+        // 清理缓存
+//            log.info("设备 :" + equipmentMapKey + " 主 动 离 线");
+        Constants.channelMap.remove(channelId);
+        Collection<String> values = Constants.equipmentMap.values();
+        values.remove(channelId);
+//            Constants.equipmentMap.remove(equipmentMapKey);
+//        }
         ctx.close();
-        log.info("地址 :" + ctx.channel().remoteAddress() + " 的设备离 线");
+        log.info("地址 :{} 的设备离 线\n剩余设备\nequipmentMap共有{}条数据，分别:{}。\nchannelMap共有{}条数据,分别:{}",
+                ctx.channel().remoteAddress(),
+                Constants.equipmentMap.size(), Constants.equipmentMap.toString(),
+                Constants.channelMap.size(), Constants.channelMap.toString());
     }
 }
