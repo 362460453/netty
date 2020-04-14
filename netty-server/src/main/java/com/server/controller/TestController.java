@@ -26,6 +26,11 @@ public class TestController {
         log.info("equipmentMap----" + Constants.equipmentMap.toString());
     }
 
+    @GetMapping("/registerSet")
+    public void registerSet() {
+        log.info("registerSet----" + Constants.registerMap.toString());
+    }
+
     public static void main(String[] args) {
         System.err.println(Constants.equipmentMap.keySet().size());
     }

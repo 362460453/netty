@@ -39,7 +39,7 @@ public class SendSignImpl implements ISendCommand {
         if (StrUtil.isEmpty(channelId)){
             throw new Exception("无法发送信号,器材未注册");
         }
-        Channel channel = Constants.channelMap.get(channelId).channel();
+        Channel channel = Constants.channelMap.get(channelId);
         if (channel == null) {
             throw new Exception("无法发送信号，管道为空");
         }

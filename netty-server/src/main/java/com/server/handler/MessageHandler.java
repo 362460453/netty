@@ -1,14 +1,12 @@
 package com.server.handler;
 
-import cn.hutool.core.thread.ThreadUtil;
-import com.server.utils.Constants;
+import com.server.service.IClientManage;
 import com.server.utils.Packet;
+import com.server.utils.SpringContextHolder;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * @ClassName FirstServerHandler
@@ -21,6 +19,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
+
 
     /*
     当前channel从远端读取到数据
@@ -38,10 +37,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         if (packet.getType() == 3 && packet.getByteBuf().getUnsignedByte(5) == 255) { //code_type
             String equipmentMapKey = packet.getByteBuf().getUnsignedByte(6) +
                     "_" + packet.getByteBuf().getUnsignedByte(7);
-            log.info("channel_Id : " + ctx.channel().id().asShortText());
-            log.info("code_type:{}", equipmentMapKey);
-            Constants.equipmentMap.put(equipmentMapKey, ctx.channel().id().asShortText());//设备和channelId对应关系
-            log.info("equipmentMap:{}", Constants.equipmentMap.toString());
+            IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
+            iClientManage.clientRegisterCallback(ctx.channel(),equipmentMapKey);
         } else {
             if (packet.getType() == 0) {
                 //控制
@@ -94,37 +91,12 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("channel_Id : " + ctx.channel().id().asShortText());
-        log.info("地址 :" + ctx.channel().remoteAddress() + " 的设备试图注册");
-        String channelId = ctx.channel().id().asShortText();
-        Constants.channelMap.put(channelId, ctx);//channelId和channel对应关系
-        log.info("channelMap:{}", Constants.channelMap.toString());
-        Packet packetResponse = new Packet();
-        packetResponse.setType((byte) 3);
-        byte[] data = {1, (byte) 255};
-        packetResponse.setData(data);
-        packetResponse.setLength((byte) packetResponse.getData().length);
-        super.channelActive(ctx);
-        Constants.pool.execute(() -> {
-            while (!(Constants.equipmentMap.containsValue(channelId))) {
-                if (Constants.channelMap.containsKey(channelId)) {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    log.info("while发送channelId:{},\nequipmentMap共有{}条数据，分别:{}。\nchannelMap共有{}条数据,分别:{}",
-                            channelId,
-                            Constants.equipmentMap.size(), Constants.equipmentMap.toString(),
-                            Constants.channelMap.size(), Constants.channelMap.toString());
-                    ctx.channel().writeAndFlush(packetResponse);
-                } else {
-                    return;
-                }
-            }
-        });
+        IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
+        iClientManage.clientChannelActive(ctx.channel());
     }
-
+    /*
+    channel出现异常会触发
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
@@ -137,26 +109,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
-        String channelId = ctx.channel().id().asShortText();
-//        String equipmentMapKey = null;
-//        for (Map.Entry<String, String> str : Constants.equipmentMap.entrySet()) {
-//            if (channelId.equals(str.getValue())) {
-//                equipmentMapKey = str.getKey();
-//            }
-//        }
-//        if (equipmentMapKey != null) {
-        // 清理缓存
-//            log.info("设备 :" + equipmentMapKey + " 主 动 离 线");
-        Constants.channelMap.remove(channelId);
-        Collection<String> values = Constants.equipmentMap.values();
-        values.remove(channelId);
-//            Constants.equipmentMap.remove(equipmentMapKey);
-//        }
-        ctx.close();
-        log.info("地址 :{} 的设备离 线\n剩余设备\nequipmentMap共有{}条数据，分别:{}。\nchannelMap共有{}条数据,分别:{}",
-                ctx.channel().remoteAddress(),
-                Constants.equipmentMap.size(), Constants.equipmentMap.toString(),
-                Constants.channelMap.size(), Constants.channelMap.toString());
+        IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
+        iClientManage.kickOutClient(ctx.channel());
     }
 }

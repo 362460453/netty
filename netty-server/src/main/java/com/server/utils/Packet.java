@@ -19,4 +19,12 @@ public class Packet {
     private Channel channel;
     private String equipmentMapKey;//查询状态时set
 
+    public Packet() {
+    }
+
+    public Packet(byte type, byte[] data) {
+        this.type = (type);
+        this.data = (data);
+        this.length = ((byte) data.length);
+    }
 }
