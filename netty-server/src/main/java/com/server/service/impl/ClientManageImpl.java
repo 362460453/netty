@@ -45,7 +45,7 @@ public class ClientManageImpl implements IClientManage {
         Constants.registerMap.put(channelId, LocalDateTime.now());
         log.info("channelMap:{}", Constants.channelMap.toString());
         try {
-            Thread.sleep(800);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
