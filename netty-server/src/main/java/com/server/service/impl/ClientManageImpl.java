@@ -44,24 +44,19 @@ public class ClientManageImpl implements IClientManage {
         Constants.channelMap.put(channelId, channel);//channelId和channel对应关系
         Constants.registerMap.put(channelId, LocalDateTime.now());
         log.info("channelMap:{}", Constants.channelMap.toString());
+        try {
+            Thread.sleep(800);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         byte[] data = {1, (byte) 255};
         Packet packet = new Packet((byte) 3, data);
-        Constants.pool.execute(() -> {
-            for (int i = 1; i < 4; i++) {
-                if (Constants.registerMap.containsKey(channelId)) {
-                    log.info("channelId:{}第{}次发送身份上报,\n剩余未上报客户端{}个，分别:{}。",
-                            channelId, i, Constants.registerMap.size(), Constants.registerMap.toString());
-                    try {
-                        Thread.sleep(i * 1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    channel.writeAndFlush(packet);
-                } else {
-                    return;
-                }
-            }
-        });
+        if (Constants.registerMap.containsKey(channelId)) {
+            log.info("剩余未上报客户端{}个，分别:{}。", Constants.registerMap.size(), Constants.registerMap.toString());
+            channel.writeAndFlush(packet);
+        } else {
+            return;
+        }
     }
 
     @Override
@@ -85,6 +80,7 @@ public class ClientManageImpl implements IClientManage {
                 log.info("定时器过滤出欲注册客户端{}个,分别是{}", channelIdList.size(), channelIdList.toString());
                 for (String channelId : channelIdList) {//循环每一个大于20s的客户端
                     if (Constants.channelMap.containsKey(channelId)) {//如果这样的客户端没有被心跳踢出
+                        log.info("定时器真实执行发送channelId:{}", channelId);
                         byte[] data = {1, (byte) 255};
                         Packet packet = new Packet((byte) 3, data);
                         Constants.channelMap.get(channelId).writeAndFlush(packet);//则在发送一次身份上报信号
