@@ -30,6 +30,16 @@ public class SpringContextHolder implements ApplicationContextAware {
         return (T) applicationContext.getBean(name);
     }
 
+    //通过class获取Bean.
+    public static <T> T getBean(Class<T> clazz) {
+        return (T) applicationContext.getBean(clazz);
+    }
+
+    //通过name,以及Clazz返回指定的Bean
+    public static <T> T getBean(String name, Class<T> clazz) {
+        return (T) applicationContext.getBean(name, clazz);
+    }
+
     private static void checkApplicationContext() {
         if (applicationContext == null)
             throw new IllegalStateException("applicationContext未注入Bean");
