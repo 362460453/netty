@@ -10,6 +10,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +18,7 @@ import java.util.Date;
 
 /**
  * @ClassName NettyServer
- * @Description: TODO
+ * @Description:
  * @Author yanlin
  * @Date 2019/11/1
  * @Version V1.0
@@ -26,8 +27,11 @@ import java.util.Date;
 public class NettyServer {
     private static final int PORT = 8084;
     public static Channel channel = null;
+    @Autowired
+    private MessageHandler messageHandler;
+
     @PostConstruct
-    public static void run() {
+    public void run() {
         NioEventLoopGroup boss = new NioEventLoopGroup();//表示监听端口,接受新连接线程，主要负责创建新连接
         NioEventLoopGroup worker = new NioEventLoopGroup();//负责读取每条数据的线程，主要用于读取数据以及业务逻辑处理
         final ServerBootstrap serverBootstrap = new ServerBootstrap();//创建了一个引导类，进行服务端启动工作
@@ -39,16 +43,12 @@ public class NettyServer {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
-                        // 空闲检测
                         ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast("decode", new PacketDecoder_New());
                         ch.pipeline().addLast("encode",new PacketEncoder_New());
-                        ch.pipeline().addLast("handler", new MessageHandler());
-//                        ch.pipeline().addLast(HeartBeatRequestHandler.INSTANCE);
+                        ch.pipeline().addLast("handler", messageHandler);
                     }
                 });
-
-
         bind(serverBootstrap, PORT);
     }
 

@@ -2,9 +2,9 @@ package com.server.handler;
 
 import com.server.service.IClientManage;
 import com.server.utils.Packet;
-import com.server.utils.SpringContextHolder;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
 
+    @Autowired
+    IClientManage iClientManage;
 
     /*
     当前channel从远端读取到数据
@@ -37,8 +39,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         if (packet.getType() == 3 && packet.getByteBuf().getUnsignedByte(5) == 255) { //code_type
             String equipmentMapKey = packet.getByteBuf().getUnsignedByte(6) +
                     "_" + packet.getByteBuf().getUnsignedByte(7);
-            IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
-            iClientManage.clientRegisterCallback(ctx.channel(),equipmentMapKey);
+//            IClientManage iClientManage = SpringContextHolder.getBean("clientManageImpl");
+            iClientManage.clientRegisterCallback(ctx.channel(), equipmentMapKey);
         } else {
             if (packet.getType() == 0) {
                 //控制
@@ -91,9 +93,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
         iClientManage.clientChannelActive(ctx.channel());
     }
+
     /*
     channel出现异常会触发
      */
@@ -109,7 +111,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
         iClientManage.kickOutClient(ctx.channel());
     }
 }
