@@ -26,7 +26,6 @@ import java.util.Date;
 @Component
 public class NettyServer {
     private static final int PORT = 8084;
-    public static Channel channel = null;
     @Autowired
     private MessageHandler messageHandler;
 
@@ -55,7 +54,6 @@ public class NettyServer {
     private static void bind(final ServerBootstrap serverBootstrap, final int port) {
         serverBootstrap.bind(port).addListener(future -> {
             if (future.isSuccess()) {
-                channel = ((ChannelFuture) future).channel();
                 System.out.println(new Date() + ": 端口[" + port + "]绑定成功!");
             } else {
                 System.err.println("端口[" + port + "]绑定失败!");

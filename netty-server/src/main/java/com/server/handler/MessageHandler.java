@@ -2,6 +2,7 @@ package com.server.handler;
 
 import com.server.service.IClientManage;
 import com.server.utils.Packet;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
+    public static Packet packetResponse() {
+        Packet packetResponse = new Packet();
+        packetResponse.setType((byte) 2);//响应类型
+        packetResponse.setData(new byte[]{0, 0});//成功
+        packetResponse.setLength((byte) packetResponse.getData().length);//数据长度
+        return packetResponse;
+    }
 
     @Autowired
     IClientManage iClientManage;
@@ -28,13 +36,8 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) throws Exception {
-        Packet packetResponse = new Packet();
-        packetResponse.setType((byte) 2);
-        byte[] data = {00, 00};
-        packetResponse.setData(data);
         packet.setChannel(ctx.channel());
-        packetResponse.setLength((byte) packetResponse.getData().length);
-        log.info("收到客户端内容：" + packet.toString());
+        log.info("服务端接收信号:{}", ByteBufUtil.hexDump(packet.getByteBuf()));
         //收到查询注册信息信号
         if (packet.getType() == 3 && packet.getByteBuf().getUnsignedByte(5) == 255) { //code_type
             String equipmentMapKey = packet.getByteBuf().getUnsignedByte(6) +
@@ -44,19 +47,17 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         } else {
             if (packet.getType() == 0) {
                 //控制
-                ctx.channel().writeAndFlush(packetResponse);
-                byte a = packet.getByteBuf().readByte();//靶机编号
+                int a = packet.getByteBuf().readUnsignedByte();//靶机编号
                 short b = packet.getByteBuf().readUnsignedByte();//指令id
-                byte c = packet.getByteBuf().readByte();//靶机类型
-                byte d = packet.getByteBuf().readByte();//命令字,一定是02
-                int e = packet.getByteBuf().readByte();//参数
+                int c = packet.getByteBuf().readUnsignedByte();//靶机类型
+                int d = packet.getByteBuf().readUnsignedByte();//命令字,一定是02
+                int e = packet.getByteBuf().readUnsignedByte();//参数
                 System.out.println("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是2）：" + d + ",参数：" + e);
                 log.info("控制信号。靶机编号：" + a + ",指令id：" + b + ",靶机类型：" + c + ",命令字（一定是2）：" + d + ",参数：" + e);
             } else if (packet.getType() == 1) {
                 //成绩
-                ctx.channel().writeAndFlush(packetResponse);
-                byte a = packet.getByteBuf().readByte();//靶机编号
-                int b = packet.getByteBuf().readByte();//靶机类型
+                int a = packet.getByteBuf().readUnsignedByte();//靶机编号
+                int b = packet.getByteBuf().readUnsignedByte();//靶机类型
                 short c = packet.getByteBuf().readUnsignedByte();//部位
                 int hight = c >> 4;
                 int low = c & 0x0f;
@@ -65,7 +66,6 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
                     System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",命中：" + hight + "环 " + low + "点 ");
                 } else if (b == 5) {//红外
                     log.info("成绩。靶机编号：" + a + ",靶机类型：" + b + ",触发红外：" + c);
-
                     System.out.println("成绩。靶机编号：" + a + ",靶机类型：" + b + ",触发红外：" + c);
                 } else {//分区
                     log.info("成绩。靶机编号：" + a + ",靶机类型：" + b + ",命中：" + c);
@@ -77,10 +77,9 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
                 log.info("结果：" + b);
             } else if (packet.getType() == 3) {
                 //查询
-                ctx.channel().writeAndFlush(packetResponse);
-                byte a = packet.getByteBuf().readByte();//靶机编号
-                byte b = packet.getByteBuf().readByte();//靶请求项
-                byte c = packet.getByteBuf().readByte();//状态
+                int a = packet.getByteBuf().readUnsignedByte();//靶机编号
+                int b = packet.getByteBuf().readUnsignedByte();//靶请求项
+                int c = packet.getByteBuf().readUnsignedByte();//状态
                 int d = packet.getByteBuf().readUnsignedByte();//电量
                 int e = packet.getByteBuf().readUnsignedByte();//信号
                 log.info("查询。靶机编号：" + a + ",请求项：" + b + ",状态：" + c + ",电量：" + d + ",信号：" + e);
@@ -112,5 +111,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         iClientManage.kickOutClient(ctx.channel());
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().writeAndFlush(MessageHandler.packetResponse());
+        super.channelReadComplete(ctx);
     }
 }
