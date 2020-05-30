@@ -48,6 +48,9 @@ public class ServerApplication {
         iSendCommand.exec(ms);
     }
 
+    /*
+    2号机器旋转
+     */
     @GetMapping("/action/b")
     public void actionB() throws Exception {
         Packet ms = new Packet();
@@ -61,6 +64,9 @@ public class ServerApplication {
         iSendCommand.exec(ms);
     }
 
+    /*
+    3号机器旋转
+     */
     @GetMapping("/action/c")
     public void actionC() throws Exception {
         Packet ms = new Packet();
@@ -75,54 +81,100 @@ public class ServerApplication {
     }
 
     /*
-    起
+    机器起，延迟20秒
      */
-    @GetMapping("/up/a")
-    public void upA() throws Exception {
+    @GetMapping("/up/a/{id}")
+    public void upA(@PathVariable("id") Integer id) throws Exception {
         Packet ms = new Packet();
-        byte[] reqData = {01, 9, 01, 00, 01, 00};//1号，1类型
-        ms.setData(reqData);
-        ms.setLength((byte) reqData.length);
-        ms.setType((byte) 00);
-
-        iSendCommand.exec(ms);
-    }
-
-    /*
-    2号靶机起
-     */
-    @GetMapping("/up/b")
-    public void upB() throws Exception {
-        Packet ms = new Packet();
-        byte[] reqData = {02, 9, 01, 00, 01, 00};//2号1类型
-        ms.setData(reqData);
-        ms.setLength((byte) reqData.length);
-        ms.setType((byte) 00);
-
-        iSendCommand.exec(ms);
-    }
-
-    /*
-    倒
-     */
-    @GetMapping("/down/b")
-    public void actionb() throws Exception {
-        Packet ms = new Packet();
-        byte[] reqData = {01, (byte) 254, 01, 00, 02, 00};
+        byte[] reqData;
+        if (id == 1) {
+            reqData = new byte[]{1, 9, 1, 0, 1, (byte) 200};//1号，环，1类型
+        } else if (id == 2) {
+            reqData = new byte[]{2, 9, 1, 0, 1, (byte) 200};//1号，环，1类型
+        } else if (id == 3) {
+            reqData = new byte[]{3, 9, 1, 0, 1, (byte) 200};//1号，环，1类型
+        } else {
+            reqData = new byte[]{4, 9, 1, 0, 1, (byte) 200};//1号，环，1类型
+        }
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);
         iSendCommand.exec(ms);
-
     }
 
     /*
-    显
+    靶机起延迟5s
+     */
+    @GetMapping("/up/b/{id}")
+    public void upB(@PathVariable("id") Integer id) throws Exception {
+        Packet ms = new Packet();
+        byte[] reqData;
+        if (id == 1) {
+            reqData = new byte[]{1, 9, 1, 0, 1, 50};//1号，环，1类型
+        } else if (id == 2) {
+            reqData = new byte[]{2, 9, 1, 0, 1, 50};//1号，环，1类型
+        } else if (id == 3) {
+            reqData = new byte[]{3, 9, 1, 0, 1, 50};//1号，环，1类型
+        } else {
+            reqData = new byte[]{4, 9, 1, 0, 1, 50};//1号，环，1类型
+        }
+        ms.setData(reqData);
+        ms.setLength((byte) reqData.length);
+        ms.setType((byte) 00);
+        iSendCommand.exec(ms);
+    }
+
+    /*
+    倒，延迟5s
+     */
+    @GetMapping("/down/b/{id}")
+    public void downA(@PathVariable("id") Integer id) throws Exception {
+        Packet ms = new Packet();
+        byte[] reqData;
+        if (id == 1) {
+            reqData = new byte[]{1, 9, 1, 0, 2, 50};//1号，环，1类型
+        } else if (id == 2) {
+            reqData = new byte[]{2, 9, 1, 0, 2, 50};//1号，环，1类型
+        } else if (id == 3) {
+            reqData = new byte[]{3, 9, 1, 0, 2, 50};//1号，环，1类型
+        } else {
+            reqData = new byte[]{4, 9, 1, 0, 2, 50};//1号，环，1类型
+        }
+        ms.setData(reqData);
+        ms.setLength((byte) reqData.length);
+        ms.setType((byte) 00);
+        iSendCommand.exec(ms);
+    }
+
+    /*
+   倒，延迟20s
+    */
+    @GetMapping("/down/b/{id}")
+    public void downB(@PathVariable("id") Integer id) throws Exception {
+        Packet ms = new Packet();
+        byte[] reqData;
+        if (id == 1) {
+            reqData = new byte[]{1, 9, 1, 0, 2, (byte) 200};//1号，环，1类型
+        } else if (id == 2) {
+            reqData = new byte[]{2, 9, 1, 0, 2, (byte) 200};//2号，环，1类型
+        } else if (id == 3) {
+            reqData = new byte[]{3, 9, 1, 0, 2, (byte) 200};//3号，环，1类型
+        } else {
+            reqData = new byte[]{4, 9, 1, 0, 2, (byte) 200};//4号，环，1类型
+        }
+        ms.setData(reqData);
+        ms.setLength((byte) reqData.length);
+        ms.setType((byte) 00);
+        iSendCommand.exec(ms);
+    }
+
+    /*
+    显，延迟5s
      */
     @GetMapping("/actionc")
     public void actionc() throws Exception {
         Packet ms = new Packet();
-        byte[] reqData = {01, (byte) 254, 01, 00, 04, 00};
+        byte[] reqData = {01, (byte) 254, 01, 00, 04, 50};
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);
@@ -135,7 +187,7 @@ public class ServerApplication {
     @GetMapping("/actiond")
     public void actiond() throws Exception {
         Packet ms = new Packet();
-        byte[] reqData = {01, (byte) 254, 01, 00, 05, 00};
+        byte[] reqData = {01, (byte) 254, 01, 00, 05, 50};
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);

@@ -23,7 +23,7 @@ public class SendSignImpl implements ISendCommand {
     @Override
     public void exec(Packet packet) throws Exception {
         String equipmentMapKey;
-        if (packet.getType() == 3) {
+        if (packet.getType() == 3) {//注册、查询
             equipmentMapKey = packet.getEquipmentMapKey();
         } else {
             String targetType;//1靶机，5红外
@@ -49,5 +49,4 @@ public class SendSignImpl implements ISendCommand {
             throw new Exception("发送信号未知异常:" + e.getMessage());
         }
     }
-
 }
