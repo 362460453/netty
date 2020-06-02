@@ -27,7 +27,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
         System.out.println(packet.toString()+"  "+packet.getByteBuf().getUnsignedByte(5));
 //        byte l = packet.getByteBuf().readByte();
 //        short i = packet.getByteBuf().readShort();
-        Thread.sleep(7000);
+//        Thread.sleep(7000);
         if (packet.getType() == 1) {
             log.info("客户端收到靶机编号:{},靶机类型:{}",packet.getByteBuf().getUnsignedByte(4),packet.getByteBuf().getUnsignedByte(5));
             byte[] reqData = {00,00};

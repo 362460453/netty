@@ -78,10 +78,21 @@ public class ClientApplication {
     @GetMapping("/action")
     public void action() {
         Packet ms = new Packet();
-        byte[] data = {127, 127, 127, 127, 127, 127};
+        byte[] data = {(byte) 200, (byte) 255, 1, 2, 1};
         ms.setData(data);
         ms.setLength((byte) data.length);
         ms.setType((byte) 00);
+        if (null != NettyClient.channel) {
+            iSendCommand.exec(NettyClient.channel, ms);
+        }
+    }
+    @GetMapping("/interrupt")
+    public void interrupt() {
+        Packet ms = new Packet();
+        byte[] data = {1, 1, (byte) 145};
+        ms.setData(data);
+        ms.setLength((byte) data.length);
+        ms.setType((byte) 1);
         if (null != NettyClient.channel) {
             iSendCommand.exec(NettyClient.channel, ms);
         }
