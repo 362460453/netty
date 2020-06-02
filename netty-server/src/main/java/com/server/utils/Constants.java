@@ -16,7 +16,7 @@ public class Constants {
     public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<>();
 
     /**
-     * netty 设备 缓存 key {code_type} 可以用reids,key:code_type,value:channelId
+     * netty 设备 缓存 key {code_type} 可以用reids,key:code_type,value:channelId,type目前只有1和5
      */
     public static ConcurrentHashMap<String, String> equipmentMap = new ConcurrentHashMap<String, String>();
     /*

@@ -1,7 +1,5 @@
 package com.server.utils;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -10,14 +8,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 public class Packet {
-
-    //    private Integer head = 42409;//同步头
+    private short head;//同步头
     private byte type;//类型
     private byte length;//长度
     private byte[] data;//数据包
-    private ByteBuf byteBuf;//byteBuf
-    private Channel channel;
-    private String equipmentMapKey;//查询状态时set
+    private String equipmentMapKey;//查询状态时set/发送动作信号时获取管道
 
     public Packet() {
     }

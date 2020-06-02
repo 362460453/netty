@@ -37,12 +37,12 @@ public class NettyServer {
         serverBootstrap
                 .group(boss, worker)
                 .channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_BACKLOG, 1024)
+                .option(ChannelOption.SO_BACKLOG, 64)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
-                        ch.pipeline().addLast(new IMIdleStateHandler());
+//                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast("decode", new PacketDecoder_New());
                         ch.pipeline().addLast("encode",new PacketEncoder_New());
                         ch.pipeline().addLast("handler", messageHandler);

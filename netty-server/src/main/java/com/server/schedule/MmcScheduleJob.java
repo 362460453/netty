@@ -19,7 +19,7 @@ public class MmcScheduleJob {
     /*
     每20秒
      */
-    @Scheduled(cron = "${per.twenty.second}")
+//    @Scheduled(cron = "${per.twenty.second}")
     public void checkClient() {
         IClientManage iClientManage= SpringContextHolder.getBean("clientManageImpl");
         iClientManage.checkClient();

@@ -20,13 +20,15 @@ public class PacketDecoder_New extends LengthFieldBasedFrameDecoder {
         if (byteBuf == null) {
             return null;
         }
-        byteBuf.readByte();
-        byteBuf.readByte();//读出来两个字节的头
+        short head = byteBuf.readShort();// 先读取两个字节命令码
+        if (head != -23127) {
+            return null;
+        }
         byte type = byteBuf.readByte();
         byte length = byteBuf.readByte();
         byte[] data = new byte[length];
-//        byteBuf.readBytes(data);
-        Packet packet = new Packet().setType(type).setLength(length).setData(data).setByteBuf(byteBuf);
+        byteBuf.readBytes(data);
+        Packet packet = new Packet().setHead(head).setType(type).setLength(length).setData(data);
         return packet;
     }
 }

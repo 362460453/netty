@@ -1,12 +1,10 @@
 package com.server.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.server.handler.MessageHandler;
 import com.server.service.ISendCommand;
 import com.server.utils.Constants;
 import com.server.utils.Packet;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +30,7 @@ public class SendSignImpl implements ISendCommand {
             } else {
                 targetType = "1";
             }
+            //TODO 迁移至luban需要有所改动
             equipmentMapKey = (int) packet.getData()[0] + "_" + targetType;
         }
         log.info("SendSignImpl.equipmentMapKey:{}", equipmentMapKey);

@@ -149,7 +149,7 @@ public class ServerApplication {
     /*
    倒，延迟20s
     */
-    @GetMapping("/down/b/{id}")
+    @GetMapping("/down/c/{id}")
     public void downB(@PathVariable("id") Integer id) throws Exception {
         Packet ms = new Packet();
         byte[] reqData;
