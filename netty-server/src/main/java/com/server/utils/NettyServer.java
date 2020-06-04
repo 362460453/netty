@@ -42,7 +42,7 @@ public class NettyServer {
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     protected void initChannel(NioSocketChannel ch) {
-//                        ch.pipeline().addLast(new IMIdleStateHandler());
+                        ch.pipeline().addLast(new IMIdleStateHandler());
                         ch.pipeline().addLast("decode", new PacketDecoder_New());
                         ch.pipeline().addLast("encode",new PacketEncoder_New());
                         ch.pipeline().addLast("handler", messageHandler);

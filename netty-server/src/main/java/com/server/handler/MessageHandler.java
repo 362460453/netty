@@ -47,7 +47,7 @@ public class MessageHandler extends SimpleChannelInboundHandler<Packet> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
-        ctx.close();
+        iClientManage.kickOutClient(ctx.channel());
         super.exceptionCaught(ctx, cause);
     }
 

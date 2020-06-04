@@ -42,6 +42,9 @@ public class DispatchRequest {
     public void dispatch(ChannelHandlerContext ctx, Packet packet) {
         ReqBO reqBO = packetToPOJOUtil.convert(packet);
         log.info("服务端接收信号reqBO:{}", reqBO.toString());
+        if (packet.getType() == 2 && reqBO.getCommand().equals(0)) {
+            return;
+        }
         boolean isDrill = false;
         //收到查询注册信息信号
         if (packet.getType() == 3 && reqBO.getCommand() == 255) { //code_type
@@ -77,8 +80,8 @@ public class DispatchRequest {
                 int c = reqBO.getState();//状态
                 int d = reqBO.getElectric();//电量
                 int e = reqBO.getDBm();//信号
-                List<String> list= Constants.getKey(Constants.equipmentMap,ctx.channel().id().asShortText());
-                log.info("查询器材list:{}。状态：" + c + ",电量：" + d + ",信号：" + e,list.toString());
+                List<String> list = Constants.getKey(Constants.equipmentMap, ctx.channel().id().asShortText());
+                log.info("查询器材list:{}。状态：" + c + ",电量：" + d + ",信号：" + e, list.toString());
             }
         }
 

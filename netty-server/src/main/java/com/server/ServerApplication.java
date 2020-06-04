@@ -55,7 +55,7 @@ public class ServerApplication {
     public void actionB() throws Exception {
         Packet ms = new Packet();
         byte[] reqData = {02, 127, 01, 01, 03,//2号，1类型
-                01, 01, 05, 00,
+                01, 01, 05, 01,
                 02, 02, 50, 05,
                 01, 01, 05, 04};
         ms.setData(reqData);

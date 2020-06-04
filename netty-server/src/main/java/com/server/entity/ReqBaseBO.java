@@ -1,6 +1,7 @@
 package com.server.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @Description: TODO
@@ -9,6 +10,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ReqBaseBO {
     /*
     靶机编码

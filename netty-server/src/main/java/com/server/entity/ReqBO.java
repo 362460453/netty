@@ -1,6 +1,7 @@
 package com.server.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @Description: TODO
@@ -9,13 +10,14 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ReqBO extends ReqBaseBO {
     /*
     指令id
      */
     private Integer directiveId;
     /*
-    命令字,当type是1时，0普通，1摇摆，2动作响应，当type=3时，0查询靶机，255上报注册信息
+    命令字,当type是1时，0普通，1摇摆，2动作响应。当type=2时，0为心跳或成功响应。当type=3时，0查询靶机，255上报注册信息
      */
     private Integer command;
     /*
