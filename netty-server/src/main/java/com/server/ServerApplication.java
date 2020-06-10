@@ -174,7 +174,7 @@ public class ServerApplication {
     @GetMapping("/actionc")
     public void actionc() throws Exception {
         Packet ms = new Packet();
-        byte[] reqData = {01, (byte) 254, 01, 00, 04, 50};
+        byte[] reqData = {2, (byte) 254, 01, 00, 04, 50};//2号
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);
@@ -187,7 +187,7 @@ public class ServerApplication {
     @GetMapping("/actiond")
     public void actiond() throws Exception {
         Packet ms = new Packet();
-        byte[] reqData = {01, (byte) 254, 01, 00, 05, 50};
+        byte[] reqData = {2, (byte) 254, 01, 00, 05, 50};//2号
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 00);
@@ -202,6 +202,7 @@ public class ServerApplication {
         ms.setData(reqData);
         ms.setLength((byte) reqData.length);
         ms.setType((byte) 03);
+        ms.setEquipmentMapKey("2_1");
         iSendCommand.exec(ms);
     }
 }
